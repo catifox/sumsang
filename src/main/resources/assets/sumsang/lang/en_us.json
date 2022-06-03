@@ -1,0 +1,18 @@
+{
+  "advancements.detonate.title": "I can't feel my legs!",
+  "advancements.detonate.description": "That's because your arms have been blown off",
+  "advancements.over_9000.title": "It's Over 9000!",
+  "advancements.over_9000.description": "Unlike the total downloads of this mod ;-;",
+  "advancements.root.title": "Recalled",
+  "advancements.root.description": "Craft a Sumsang Nalaxy Gote 7",
+  "config.sumsang.explosive_power": "Explosive power",
+  "config.sumsang.poison_on_detonate": "Poison on detonate",
+  "config.sumsang.poison_time": "Poison Time",
+  "config.sumsang.right_click_detonator": "Right click detonator",
+  "item.sumsang.nalaxygote7": "Nalaxy Gote 7",
+  "sumsang.midnightconfig.title": "Sumsang Config",
+  "sumsang.midnightconfig.explosivePower": "Explosive Power",
+  "sumsang.midnightconfig.poisonOnDetonate": "Potion On Detonate",
+  "sumsang.midnightconfig.poisonTime": "Time of Potion",
+  "sumsang.midnightconfig.rightClickDetonator": "Detonate When Right Click"
+}
