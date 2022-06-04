@@ -1,18 +1,15 @@
 package xyz.catifox.sumsang;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 
-import static net.minecraft.world.explosion.Explosion.DestructionType.*;
+import static net.minecraft.world.explosion.Explosion.DestructionType.DESTROY;
 
 public class NalaxyGote7Item extends Item {
     public NalaxyGote7Item(Item.Settings settings) {
@@ -26,33 +23,33 @@ public class NalaxyGote7Item extends Item {
 
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack itemStack = user.getStackInHand(hand);
-        if (!world.isClient || !Configuration.rightClickDetonator) {   //如果是remote并且右键爆炸为false就pass
+        float explosivePower = Configuration.explosivePower; //爆炸威力
+        int poisonTime = Configuration.poisonTime;//药水时间
+
+        if (!world.isClient) {
+            world.createExplosion(null, user.getX(), user.getY() - 0.5, user.getZ(), (explosivePower / 7), true, DESTROY);//右键爆炸
+        }
+
+        if (!Configuration.rightClickDetonator) {   //右键爆炸如果为 false 就 pass
             return TypedActionResult.pass(itemStack);
         }
+
         if (!user.getAbilities().creativeMode) {    //玩家不是创造时，右键减少1个
             itemStack.decrement(1);
         }
-        float explosivePower = Configuration.explosivePower;
+
+        if (Configuration.poisonOnDetonate && poisonTime > 0) {
+            user.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 20 * poisonTime));//添加效果
+        }
 
         if (explosivePower > 0) {
             //爆炸成就todo
             if (explosivePower > 9000) {
                 //9000成就todo
             }
-
-//            world.createExplosion((Entity) null, user.getX(), user.getBodyY(0.0625), user.getZ(), (explosivePower / 5), true, DESTROY);//右键爆炸
-            world.createExplosion((Entity) null, user.getX(), user.getY()-0.5, user.getZ(), (explosivePower / 7), true, DESTROY);//右键爆炸 //但好像有点问题
-
-            world.addParticle(ParticleTypes.CLOUD, user.getX(), user.getY() + 0.5, user.getZ(), 0.0, 0.0, 0.0);//原版里的爆炸有粒子，但这里要手动添加 //粒子太小惹
         }
-        int poisonTime = Configuration.poisonTime;
-        if (Configuration.poisonOnDetonate && poisonTime > 0) {
-            user.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 20 * poisonTime));//添加效果 //为什么没法结束？
-            user.addStatusEffect(new StatusEffectInstance(StatusEffects.HUNGER, 140 ));
 
-        }
-//        return TypedActionResult.success(itemStack);
-        return TypedActionResult.pass(itemStack);
+        return TypedActionResult.success(itemStack);
     }
 }
    /* @Override
