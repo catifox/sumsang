@@ -1,89 +1,82 @@
 package xyz.catifox.sumsang;
 
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
 
-import static net.minecraft.world.explosion.Explosion.DestructionType.DESTROY;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementProgress;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class NalaxyGote7Item extends Item {
-    public NalaxyGote7Item(Item.Settings settings) {
-        super(settings);
+    public NalaxyGote7Item() {
+        super(new Item.Properties().tab(CreativeModeTab.TAB_MISC).stacksTo(16).rarity(Rarity.COMMON));
     }
 
-    /*右键后会发生什么？
-    - 成就，这东西可以按照数据包触发器来做
-    - 爆炸
-    - 中毒 */
-
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        ItemStack itemStack = user.getStackInHand(hand);
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
+        ItemStack itemStack = player.getItemInHand(interactionHand);
         float explosivePower = Configuration.explosivePower; //爆炸威力
         int poisonTime = Configuration.poisonTime;//药水时间
+        Map<String, Object> dependencies = new HashMap<>();
+        dependencies.put("entity", player);
+        Entity entity = (Entity) dependencies.get("entity");
 
-        if (!world.isClient) {
-            world.createExplosion(null, user.getX(), user.getY() - 0.5, user.getZ(), (explosivePower / 7), true, DESTROY);//右键爆炸
+        if (!level.isClientSide) {
+            Explosion.BlockInteraction blockInteraction = level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE;
+            level.explode(null, player.getX(), player.getY(), player.getZ(), explosivePower / 7, true,blockInteraction);//爆炸时起火
         }
 
         if (!Configuration.rightClickDetonator) {   //右键爆炸如果为 false 就 pass
-            return TypedActionResult.pass(itemStack);
+            return InteractionResultHolder.pass(itemStack);
         }
 
-        if (!user.getAbilities().creativeMode) {    //玩家不是创造时，右键减少1个
-            itemStack.decrement(1);
-        }
-
-        if (Configuration.poisonOnDetonate && poisonTime > 0) {
-            user.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 20 * poisonTime));//添加效果
-        }
-
-        if (explosivePower > 0) {
-            //爆炸成就todo
-            if (explosivePower > 9000) {
-                //9000成就todo
-            }
-        }
-
-        return TypedActionResult.success(itemStack);
-    }
-}
-   /* @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) { //右键事件
-        ItemStack itemStack = player.getHeldItem(hand);//手持物品
-        if (world.isRemote || !Sumsang.getInstance().getConfiguration().getRightClickDetonator().get()) {   //如果是remote并且右键爆炸为false就pass
-            return new ActionResult<>(ActionResultType.PASS, itemStack);
-        }
-
-        if (!player.isCreative()) { //玩家不是创造时，右键减少1个
+        if (!player.getAbilities().instabuild) {    //玩家不是创造时，右键减少1个
             itemStack.shrink(1);
         }
 
-        float explosivePower = Sumsang.getInstance().getConfiguration().getExplosivePower().get();
-        if (explosivePower > 0) {//爆炸伤害大于0时
-            Toolbox.grantAdvancement(player, DETONATE_ADVANCEMENT);//获得爆炸成就
-            if (explosivePower > 9000) {//爆炸伤害大于9000时
-                Toolbox.grantAdvancement(player, OVER_9000_ADVANCEMENT);//9000成就
+        if (Configuration.poisonOnDetonate && poisonTime > 0) {
+            player.addEffect(new MobEffectInstance(MobEffects.POISON, 20 * poisonTime));//添加效果
+        }
+
+        if (explosivePower > 0) {
+            if (entity instanceof ServerPlayer _player) {//添加成就
+                Advancement _adv = _player.server.getAdvancements().getAdvancement(new ResourceLocation("sumsang:detonate"));
+                AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(_adv);
+                if (!_ap.isDone()) {
+                    Iterator _iterator = _ap.getRemainingCriteria().iterator();
+                    while (_iterator.hasNext())
+                        _player.getAdvancements().award(_adv, (String) _iterator.next());
+                }
             }
 
-            BlockPos position = player.getPosition();//玩家位置取得
-            world.createExplosion(null, position.getX(), position.getY(), position.getZ(), (explosivePower / 10), true, Explosion.Mode.DESTROY);//在玩家位置爆炸 Destroy模式
+            if (explosivePower > 9000) {
+                if (entity instanceof ServerPlayer _player) {//添加成就
+                    Advancement _adv = _player.server.getAdvancements().getAdvancement(new ResourceLocation("sumsang:over_9000"));
+                    AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(_adv);
+                    if (!_ap.isDone()) {
+                        Iterator _iterator = _ap.getRemainingCriteria().iterator();
+                        while (_iterator.hasNext())
+                            _player.getAdvancements().award(_adv, (String) _iterator.next());
+                    }
+                }
+            }
         }
 
-        int poisonTime = Sumsang.getInstance().getConfiguration().getPoisonTime().get(); //中毒时间
-        if (Sumsang.getInstance().getConfiguration().getPoisonOnDetonate().get() && poisonTime > 0) {//打开中毒且事件大于0
-            player.addPotionEffect(new EffectInstance(Effects.POISON, (20 * poisonTime), 0));//中毒时间
-        }
-
-        return new ActionResult<>(ActionResultType.SUCCESS, itemStack);//action完成
-*/
-
-
-
-
-
-
+        return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
+    }
+}
