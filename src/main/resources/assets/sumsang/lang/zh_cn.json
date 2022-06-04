@@ -1,0 +1,18 @@
+{
+  "advancements.detonate.title": "我的胳膊没有知觉了！",
+  "advancements.detonate.description": "那是因为你的胳膊已经被炸掉了",
+  "advancements.over_9000.title": "超过 9000",
+  "advancements.over_9000.description": "比这个模组的下载量还要大 ;-;",
+  "advancements.root.title": "回忆",
+  "advancements.root.description": "创造一部 Sumsang Nalaxy Gote 7",
+  "config.sumsang.explosive_power": "爆炸能量",
+  "config.sumsang.poison_on_detonate": "爆炸时中毒",
+  "config.sumsang.poison_time": "中毒时间",
+  "config.sumsang.right_click_detonator": "右击爆炸",
+  "item.sumsang.nalaxygote7": "Nalaxy Gote 7",
+  "sumsang.midnightconfig.title": "Sumsang 配置",
+  "sumsang.midnightconfig.explosivePower": "爆炸能量",
+  "sumsang.midnightconfig.poisonOnDetonate": "爆炸时中毒",
+  "sumsang.midnightconfig.poisonTime": "中毒时间",
+  "sumsang.midnightconfig.rightClickDetonator": "爆炸时中毒"
+}

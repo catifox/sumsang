@@ -11,6 +11,14 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
+	maven {
+		name = "Modrinth"
+		url = "https://api.modrinth.com/maven"
+		content {
+			includeGroup "maven.modrinth"
+		}
+	}
+//	maven { url "https://maven.terraformersmc.com/releases" }
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
@@ -26,6 +34,10 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	//用于配置
+	modImplementation "maven.modrinth:midnightlib:0.4.0"
+	include "maven.modrinth:midnightlib:0.4.0"
 }
 
 processResources {
