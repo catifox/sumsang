@@ -33,8 +33,10 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	//用于配置
-	modImplementation "maven.modrinth:midnightlib:0.4.0"
-	include "maven.modrinth:midnightlib:0.4.0"
+	modImplementation "maven.modrinth:midnightlib:${project.midnightlib_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	include "maven.modrinth:midnightlib:${project.midnightlib_version}"
 }
 
 processResources {
