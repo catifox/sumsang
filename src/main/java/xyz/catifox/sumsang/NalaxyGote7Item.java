@@ -20,7 +20,6 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class NalaxyGote7Item extends Item {
@@ -41,10 +40,6 @@ public class NalaxyGote7Item extends Item {
             level.explode(null, player.getX(), player.getY(), player.getZ(), explosivePower / 7, true,blockInteraction);//爆炸时起火
         }
 
-        if (!Configuration.rightClickDetonator) {   //右键爆炸如果为 false 就 pass
-            return InteractionResultHolder.pass(itemStack);
-        }
-
         if (!player.getAbilities().instabuild) {    //玩家不是创造时，右键减少1个
             itemStack.shrink(1);
         }
@@ -58,9 +53,7 @@ public class NalaxyGote7Item extends Item {
                 Advancement _adv = _player.server.getAdvancements().getAdvancement(new ResourceLocation("sumsang:detonate"));
                 AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(_adv);
                 if (!_ap.isDone()) {
-                    Iterator _iterator = _ap.getRemainingCriteria().iterator();
-                    while (_iterator.hasNext())
-                        _player.getAdvancements().award(_adv, (String) _iterator.next());
+                    for (String s : _ap.getRemainingCriteria()) _player.getAdvancements().award(_adv, s);
                 }
             }
 
@@ -69,9 +62,7 @@ public class NalaxyGote7Item extends Item {
                     Advancement _adv = _player.server.getAdvancements().getAdvancement(new ResourceLocation("sumsang:over_9000"));
                     AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(_adv);
                     if (!_ap.isDone()) {
-                        Iterator _iterator = _ap.getRemainingCriteria().iterator();
-                        while (_iterator.hasNext())
-                            _player.getAdvancements().award(_adv, (String) _iterator.next());
+                        for (String s : _ap.getRemainingCriteria()) _player.getAdvancements().award(_adv, s);
                     }
                 }
             }

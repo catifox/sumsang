@@ -14,5 +14,5 @@
   "sumsang.midnightconfig.explosivePower": "爆炸能量",
   "sumsang.midnightconfig.poisonOnDetonate": "爆炸时中毒",
   "sumsang.midnightconfig.poisonTime": "中毒时间",
-  "sumsang.midnightconfig.rightClickDetonator": "爆炸时中毒"
+  "sumsang.midnightconfig.rightClickDetonator": "右键时爆炸"
 }
