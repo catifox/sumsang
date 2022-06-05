@@ -1,19 +1,18 @@
 package xyz.catifox.sumsang;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 public class SumsangMod implements ModInitializer {
-    public static final NalaxyGote7Item FABRIC_ITEM = new NalaxyGote7Item(new FabricItemSettings().group(ItemGroup.MISC).maxCount(16));//创建物品，最大堆叠 16
+    private static final String MODID = "sumsang";
+    public static Item NalaxyGote7Item;
 
     @Override
     public void onInitialize() {
         Configuration.init("sumsang", Configuration.class);
-        Registry.register(Registry.ITEM, new Identifier("sumsang", "nalaxygote7"), FABRIC_ITEM);//注册物品
-
+        NalaxyGote7Item = Registry.register(Registry.ITEM, new ResourceLocation(SumsangMod.MODID, "nalaxygote7"), new NalaxyGote7Item());
     }
 
 }
